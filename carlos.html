@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Agrícola - OPO.ARG / AGROPINUS</title>
+    <style>
+        /* Estilos Generales */
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #0288d1;
+            --dark-color: #1b5e20;
+            --light-bg: #f4f8f5;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Navegación */
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary-color);
+}
+
+/* Ajuste para que se acomode bien en Celular */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.8rem 0.5rem;
+    }
+
+    .logo {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem 1rem;
+        font-size: 0.85rem;
+        width: 100%;
+    }
+}
+        /* Secciones */
+        section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Banner Principal / Inicio */
+        #home {
+            background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url('Imagen/Fondo.jpg'); 
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 6rem 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+
+        #home h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        #home h2 {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        /* ¿Quiénes Somos? */
+        #about {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        #about h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        #about p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            text-align: justify;
+        }
+
+        /* Catálogo Dinámico */
+        .catalog-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+        }
+
+        .catalog-subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .catalogo { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 1.5rem; 
+            margin-bottom: 30px; 
+        }
+
+        .producto-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #ddd;
+        }
+
+        .producto-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+        }
+
+        .producto-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            background-color: #eee;
+        }
+
+        .producto-card h3 { 
+            margin: 10px 0 5px 0; 
+            color: var(--dark-color); 
+        }
+
+        .producto-card p em {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Modal de Detalles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0; top: 0; 
+            width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.6); 
+        }
+
+        .modal-contenido {
+            background-color: #fff;
+            margin: 2% auto; /* Reduce el margen superior e inferior */
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+    
+           /* Control de altura y scroll */
+           max-height: 85vh; /* Limita la altura al 85% de la pantalla */
+           overflow-y: auto; /* Activa la barra de desplazamiento si el contenido no cabe */
+    
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .cerrar-modal {
+            position: absolute;
+            right: 15px; top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .cerrar-modal:hover {
+            color: #000;
+        }
+
+        .modal-imagen {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #eee;
+        }
+
+        /* Formulario de Solicitud de Información */
+        .formulario-seccion {
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: 3rem auto 1rem auto;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .formulario-seccion h2 { 
+            text-align: center; 
+            margin-bottom: 8px; 
+            color: var(--primary-color);
+        }
+
+        .formulario-seccion p { 
+            text-align: center; 
+            color: #555; 
+            margin-bottom: 20px; 
+        }
+
+        .campo-grupo { 
+            margin-bottom: 15px; 
+        }
+
+        .campo-grupo label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            color: #333 !important; /* Fuerza el color oscuro para que resalte sobre el fondo blanco */
+        }
+
+        .campo-grupo input, .campo-grupo textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn-enviar {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-enviar:hover { 
+            background-color: var(--dark-color); 
+        }
+
+        /* Contacto Produtores */
+        .producers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .producer-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .producer-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .producer-card p {
+            margin: 0.3rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        footer a {
+            color: #81c784;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navegación -->
+    <header>
+        <nav>
+            <div class="logo">OPOAGRICOLA</div>
+            <ul class="nav-links">
+                <li><a href="#home">INICIO</a></li>
+                <li><a href="#about">NOSOTROS</a></li>
+                <li><a href="#catalog">CATÁLOGO</a></li>
+                <li><a href="#contact">CONTACTO</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Inicio / Banner -->
+    <section id="home">
+        <h1>OPO.AGRI</h1>
+        <h2>IMPULSANDO A NUESTROS AGRICULTORES<br><br>¡CADA COMPRA APOYA DIRECTAMENTE AL CAMPO MEXICANO!</h2>
+    </section>
+
+    <!-- Sección ¿Quiénes Somos? -->
+    <section id="about">
+        <h2>¿QUIÉNES SOMOS?</h2>
+        <p>Somos personas que queremos crear vínculos para ti y para nuestros agricultores para crear alianzas fuertes y oportunidades donde tú encuentres de manera rápida tus productos que necesites.</p>
+        <p>Vamos a demostrar cómo podemos ayudar a los agricultores de Michoacán y Malinalco a tener mayor visibilidad para ofrecer sus productos y facilitar el contacto con posibles compradores.</p>
+    </section>
+
+    <!-- Catálogo de Productos (Dinámico e Interactivo) -->
+    <section id="catalog">
+        <h2 class="catalog-title">CATÁLOGO DE PRODUCTOS</h2>
+        <p class="catalog-subtitle">Haz clic en cualquier producto para desplegar la información detallada:</p>
+
+        <!-- Lista de Productos Dinámica -->
+        <div class="catalogo" id="catalogo"></div>
+
+        <!-- Modal para desplegar detalles del producto -->
+        <div id="modalProducto" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+                <img id="modalImagen" class="modal-imagen" src="" alt="Imagen de producto">
+                <h2 id="modalNombre" style="color: var(--primary-color); margin-bottom: 10px;"></h2>
+                <p><strong>Variedad:</strong> <span id="modalVariedad"></span></p>
+                <p><strong>Temporada:</strong> <span id="modalTemporada"></span></p>
+                <p><strong>Región:</strong> <span id="modalRegion"></span></p>
+                <p><strong>Presentación de venta:</strong> <span id="modalPresentacion"></span></p>
+                <p><strong>Disponibilidad:</strong> <span id="modalDisponibilidad"></span></p>
+                <p style="margin-top: 10px;"><strong>Descripción:</strong> <span id="modalDescripcion"></span></p>
+            </div>
+        </div>
+
+        <!-- Sección del Formulario -->
+        <footer id="contact">
+        <div class="formulario-seccion">
+            <h2>Solicitud de información sobre lo que estamos haciendo</h2>
+            <p>Llene este formulario y uno de nuestros agentes se contactará con usted.</p>
+            
+            <form id="formContacto" onsubmit="enviarAWhatsApp(event)">
+                <div class="campo-grupo">
+                    <label for="nombre">Nombre completo</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="campo-grupo">
+                    <label for="telefono">Número de teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" required>
+                </div>
+                <div class="campo-grupo">
+                    <label for="motivo">Describa brevemente el motivo de su solicitud</label>
+                    <textarea id="motivo" name="motivo" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn-enviar">Enviar</button>
+            </form>
+        </div>
+    </section>
+
+        <!-- Pie de página / Contacto General -->
+        <footer id="contact">
+        <p><strong>Social:</strong> @Opo_Agricola</p>
+        <p><strong>Address:</strong> Edo. Méx, Toluca</p>
+    </footer>
+
+    <!-- Lógica de Script -->
+    <script>
+        const numeroWhatsAppAgente = "7141089272";
+
+        // Arreglo de productos completo mapeado a las imágenes del primer documento
+        const productos = [
+            {
+                nombre: "Guayaba",
+                variedad: "Media China",
+                temporada: "Septiembre a febrero",
+                region: "Zitácuaro, Michoacán",
+                presentacion: "Kilogramo, caja o tonelada",
+                disponibilidad: "En temporada",
+                descripcion: "Fruta dulce y aromática representativa del oriente michoacano.",
+                imagen: "Imagen/Guayaba.jpg"
+            },
+            {
+                nombre: "Papa",
+                variedad: "Alpha",
+                temporada: "Todo el año",
+                region: "Zitácuaro, Michoacán",
+                presentacion: "Kilogramo, costal o tonelada",
+                disponibilidad: "Disponible",
+                descripcion: "Tubérculo utilizado en una gran variedad de platillos.",
+                imagen: "Imagen/Papas.jpg"
+            },
+            {
+                nombre: "Zanahoria",
+                variedad: "Nantes",
+                temporada: "Otoño e invierno",
+                region: "Zitácuaro, Michoacán",
+                presentacion: "Kilogramo, costal o tonelada",
+                disponibilidad: "Disponible",
+                descripcion: "Raíz de color naranja empleada en ensaladas, sopas y guisos.",
+                imagen: "Imagen/Zanahoria.jpg"
+            },
+            {
+                nombre: "Repollo (Col)",
+                variedad: "Verde",
+                temporada: "Otoño e invierno",
+                region: "Zitácuaro, Michoacán",
+                presentacion: "Kg, caja o tonelada",
+                disponibilidad: "En temporada",
+                descripcion: "Hortaliza de hojas compactas utilizada en ensaladas y platillos cocinados.",
+                imagen: "Imagen/Col.jpg"
+            },
+            {
+                nombre: "Aguacate",
+                variedad: "Hass",
+                temporada: "Todo el año",
+                region: "Malinalco, Estado de México",
+                presentacion: "Kilogramo, caja o tonelada",
+                disponibilidad: "Disponible",
+                descripcion: "Fruta de pulpa cremosa ampliamente utilizada en la gastronomía mexicana.",
+                imagen: "Imagen/Aguacate.jpg"
+            },
+            {
+                nombre: "Lechuga",
+                variedad: "Romana",
+                temporada: "Septiembre a marzo",
+                region: "Malinalco, Estado de México",
+                presentacion: "Caja",
+                disponibilidad: "En temporada",
+                descripcion: "Hortaliza de hojas verdes consumida principalmente en ensaladas.",
+                imagen: "Imagen/Lechuga.jpg"
+            },
+            {
+                nombre: "Espinaca",
+                variedad: "Hoja lisa",
+                temporada: "Otoño e invierno",
+                region: "Malinalco, Estado de México",
+                presentacion: "Manojo, kilogramo o caja",
+                disponibilidad: "En temporada",
+                descripcion: "Hortaliza de hojas verdes utilizada en diversas preparaciones culinarias.",
+                imagen: "Imagen/Espinaca.jpg"
+            },
+            {
+                nombre: "Uva",
+                variedad: "Red Globe",
+                temporada: "Verano y otoño",
+                region: "Malinalco, Estado de México",
+                presentacion: "Kilogramo o caja",
+                disponibilidad: "Según temporada",
+                descripcion: "Fruta de sabor dulce consumida fresca o utilizada en postres y bebidas.",
+                imagen: "Imagen/Uvas.jpg"
+            },
+            {
+                nombre: "Papaya",
+                variedad: "Maradol",
+                temporada: "Todo el año",
+                region: "Malinalco, Estado de México",
+                presentacion: "Kilogramo, caja o tonelada",
+                disponibilidad: "Disponible",
+                descripcion: "Fruta tropical de pulpa dulce y jugosa, consumida principalmente fresca y utilizada en jugos y preparaciones.",
+                imagen: "Imagen/Papaya.jpg"
+            },
+            {
+                nombre: "Fresa",
+                variedad: "Fresa",
+                temporada: "Otoño e invierno",
+                region: "Zitácuaro, Michoacán",
+                presentacion: "Kilogramo, caja o tonelada",
+                disponibilidad: "En temporada",
+                descripcion: "Fruta de color rojo y sabor dulce, consumida fresca y utilizada en postres, bebidas y otras preparaciones.",
+                imagen: "Imagen/Fresa.jpg"
+            },
+            {
+                nombre: "Durazno",
+                variedad: "Criollo",
+                temporada: "Mayo a julio",
+                region: "Zitácuaro, Michoacán",
+                presentacion: "Kilogramo, caja o tonelada",
+                disponibilidad: "En temporada",
+                descripcion: "Fruta de pulpa dulce y jugosa, consumida principalmente fresca y utilizada también en mermeladas y otros productos.",
+                imagen: "Imagen/Durazno.jpg"
+            }
+        ];
+
+        // Cargar productos dinámicamente en el catálogo
+        const catalogoDiv = document.getElementById("catalogo");
+        productos.forEach((prod, index) => {
+            const card = document.createElement("div");
+            card.className = "producto-card";
+            card.onclick = () => abrirModal(index);
+            card.innerHTML = `
+                <img src="${prod.imagen}" alt="${prod.nombre}">
+                <h3>${prod.nombre}</h3>
+                <p><em>${prod.variedad}</em></p>
+            `;
+            catalogoDiv.appendChild(card);
+        });
+
+        // Funciones del Modal
+        function abrirModal(index) {
+            const prod = productos[index];
+            document.getElementById("modalImagen").src = prod.imagen;
+            document.getElementById("modalImagen").alt = prod.nombre;
+            document.getElementById("modalNombre").innerText = prod.nombre;
+            document.getElementById("modalVariedad").innerText = prod.variedad;
+            document.getElementById("modalTemporada").innerText = prod.temporada;
+            document.getElementById("modalRegion").innerText = prod.region;
+            document.getElementById("modalPresentacion").innerText = prod.presentacion;
+            document.getElementById("modalDisponibilidad").innerText = prod.disponibilidad;
+            document.getElementById("modalDescripcion").innerText = prod.descripcion;
+            document.getElementById("modalProducto").style.display = "block";
+        }
+
+        function cerrarModal() {
+            document.getElementById("modalProducto").style.display = "none";
+        }
+
+        // Enviar formulario a WhatsApp
+        function enviarAWhatsApp(event) {
+            event.preventDefault();
+            const nombre = document.getElementById("nombre").value;
+            const telefono = document.getElementById("telefono").value;
+            const motivo = document.getElementById("motivo").value;
+
+            const textoMensaje = `Hola, envío una *Solicitud de información sobre el producto🍓🥬🥔*:\n\n` +
+                                 `*👤Nombre:* ${nombre}\n` +
+                                 `*📞Teléfono:* ${telefono}\n` +
+                                 `*📄Motivo:* ${motivo}`;
+
+            const numeroTelefono = "7141089272";
+            const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroTelefono}&text=${encodeURIComponent(textoMensaje)}`;
+            
+            window.open(urlWhatsApp, "_blank");
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("modalProducto");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
